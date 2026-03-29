@@ -1,2 +1,2 @@
-# cv3-lora-pipeline
-cosyvoice lora pipeline
+# qwentts-lora-pipeline
+
