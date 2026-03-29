@@ -1,0 +1,9 @@
+peft>=0.17.0
+transformers>=4.49.0
+safetensors
+torchaudio
+onnxruntime
+numpy
+omegaconf
+nvidia-ml-py
+tqdm
