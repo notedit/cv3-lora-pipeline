@@ -77,6 +77,49 @@ python -m scripts.infer \
     --prompt_text "Prompt transcript."
 ```
 
+### 4b. Inference with vLLM (GPU accelerated)
+
+For higher throughput, use vLLM-accelerated inference with dynamic LoRA loading.
+vLLM handles KV-cache management and batching for the LLM stage while CosyVoice3's
+flow model and vocoder handle audio synthesis.
+
+**Setup** (separate conda environment recommended):
+```bash
+conda create -n cosyvoice_vllm --clone cosyvoice
+conda activate cosyvoice_vllm
+
+# Choose one:
+pip install vllm==0.9.0 transformers==4.51.3 numpy==1.26.4
+# OR
+pip install vllm>=0.11.0 transformers==4.57.1 numpy==1.26.4
+```
+
+**Run with LoRA adapter** (dynamic loading via vLLM LoraRequest):
+```bash
+python -m scripts.infer_vllm \
+    --base_model pretrained_models/CosyVoice3-0.5B \
+    --lora_dir experiments/cv3/default \
+    --texts "Text to synthesize." \
+    --prompt_wav prompts/wav/example.wav \
+    --prompt_text "Prompt transcript."
+```
+
+**Run without LoRA** (base model with vLLM acceleration only):
+```bash
+python -m scripts.infer_vllm \
+    --base_model pretrained_models/CosyVoice3-0.5B \
+    --texts "Text to synthesize." \
+    --prompt_wav prompts/wav/example.wav \
+    --prompt_text "Prompt transcript."
+```
+
+Key differences from `scripts/infer.py`:
+- Requires CUDA (no CPU fallback)
+- LoRA adapters loaded dynamically via vLLM's `LoraRequest` (no PEFT dependency at inference time)
+- `embed_patch` is applied to the local embedding table before vLLM export
+- `--gpu_memory_utilization` controls vLLM KV-cache allocation (default: 0.2)
+- `--max_loras` sets the max concurrent LoRA adapters (default: 4)
+
 ## Output Format
 
 Training produces two files in the output directory:

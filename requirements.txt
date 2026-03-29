@@ -7,3 +7,7 @@ numpy
 omegaconf
 nvidia-ml-py
 tqdm
+
+# vLLM (optional, for accelerated inference with scripts/infer_vllm.py)
+# Requires separate conda env — see README for setup instructions.
+# vllm>=0.9.0
